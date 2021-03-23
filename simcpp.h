@@ -330,28 +330,6 @@ public:
   ProcessPtr shared_from_this();
 };
 
-/// Condition process used for Simulation::any_of and Simulation::all_of.
-class Condition : public Process {
-public:
-  /**
-   * Constructs a condition.
-   *
-   * @param sim Simulation instance.
-   * @param n Number of times the process must be resumed before it finishes.
-   */
-  Condition(SimulationPtr sim, int n);
-
-  /**
-   * Wait for the given number of resumes and then finish.
-   *
-   * @return Whether the process is still running.
-   */
-  bool Run() override;
-
-private:
-  int n;
-};
-
 } // namespace simcpp
 
 #endif // SIMCPP_H_

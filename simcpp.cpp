@@ -22,34 +22,51 @@ EventPtr Simulation::timeout(simtime delay) {
 }
 
 EventPtr Simulation::any_of(std::initializer_list<EventPtr> events) {
-  int n = 1;
+  auto any_of_event = event();
+
   for (auto &event : events) {
     if (event->is_triggered()) {
-      n = 0;
-      break;
+      any_of_event->trigger();
+      return any_of_event;
     }
   }
 
-  auto process = start_process<Condition>(n);
+  auto handler = [any_of_event](simcpp::EventPtr) { any_of_event->trigger(); };
+
   for (auto &event : events) {
-    event->add_handler(process);
+    event->add_handler(handler);
   }
-  return process;
+
+  return any_of_event;
 }
 
 EventPtr Simulation::all_of(std::initializer_list<EventPtr> events) {
-  int n = 0;
+  auto all_of_event = event();
+  int n = events.size();
+
   for (auto &event : events) {
-    if (!event->is_triggered()) {
-      ++n;
+    if (event->is_triggered()) {
+      --n;
     }
   }
 
-  auto process = start_process<Condition>(n);
-  for (auto &event : events) {
-    event->add_handler(process);
+  if (n == 0) {
+    all_of_event->trigger();
+    return all_of_event;
   }
-  return process;
+
+  auto handler = [all_of_event, &n](simcpp::EventPtr) {
+    --n;
+    if (n == 0) {
+      all_of_event->trigger();
+    }
+  };
+
+  for (auto &event : events) {
+    event->add_handler(handler);
+  }
+
+  return all_of_event;
 }
 
 void Simulation::schedule(EventPtr event, simtime delay /* = 0.0 */) {
@@ -209,19 +226,6 @@ void Process::resume() {
 
 ProcessPtr Process::shared_from_this() {
   return std::static_pointer_cast<Process>(Event::shared_from_this());
-}
-
-/* Condition */
-
-Condition::Condition(SimulationPtr sim, int n) : Process(sim), n(n) {}
-
-bool Condition::Run() {
-  PT_BEGIN();
-  while (n > 0) {
-    PT_YIELD();
-    --n;
-  }
-  PT_END();
 }
 
 } // namespace simcpp
