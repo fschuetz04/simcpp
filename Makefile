@@ -1,6 +1,6 @@
 HEADER=simcpp.h protothread.h
 SOURCE=simcpp.cpp
-EXE=example-minimal example-twocars
+EXE=example-minimal example-twocars example-resource
 
 .PHONY: clean
 
