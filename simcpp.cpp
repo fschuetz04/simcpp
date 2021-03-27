@@ -41,7 +41,6 @@ EventPtr Simulation::any_of(std::initializer_list<EventPtr> events) {
 }
 
 EventPtr Simulation::all_of(std::initializer_list<EventPtr> events) {
-  auto all_of_event = event();
   int n = events.size();
 
   for (auto &event : events) {
@@ -50,14 +49,17 @@ EventPtr Simulation::all_of(std::initializer_list<EventPtr> events) {
     }
   }
 
+  auto all_of_event = event();
+
   if (n == 0) {
     all_of_event->trigger();
     return all_of_event;
   }
-
-  auto handler = [all_of_event, &n](simcpp::EventPtr) {
-    --n;
-    if (n == 0) {
+  
+  auto n_ptr = std::make_shared<int>(n);
+  auto handler = [all_of_event, n_ptr](simcpp::EventPtr) {
+    --*n_ptr;
+    if (*n_ptr == 0) {
       all_of_event->trigger();
     }
   };
