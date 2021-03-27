@@ -7,10 +7,10 @@ EXE=example-minimal example-twocars example-resource
 all: $(EXE)
 
 %: %.cpp $(HEADER) $(SOURCE)
-	g++ -Wall -std=c++11 $< $(SOURCE) -o $@
+	g++ -Wall -Wextra -std=c++11 $< $(SOURCE) -o $@
 
 test: test.cpp $(HEADER) $(SOURCE)
-	g++ -Wall -std=c++11 $< $(SOURCE) -o $@ -lgtest_main -lgtest -lpthread
+	g++ -Wall -Wextra -std=c++11 $< $(SOURCE) -o $@ -lgtest_main -lgtest -lpthread
 
 clean:
 	rm $(EXE) test
