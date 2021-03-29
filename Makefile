@@ -10,7 +10,7 @@ all: $(EXE)
 	g++ -Wall -Wextra -std=c++11 $< $(SOURCE) -o $@
 
 test: test.cpp $(HEADER) $(SOURCE)
-	g++ -Wall -Wextra -std=c++11 $< $(SOURCE) -o $@ -lgtest_main -lgtest -lpthread
+	g++ -Wall -Wextra -std=c++11 --coverage $< $(SOURCE) -o $@ -lgtest_main -lgtest -lpthread
 
 clean:
 	rm $(EXE) test
