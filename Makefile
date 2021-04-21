@@ -13,4 +13,4 @@ test: test.cpp $(HEADER) $(SOURCE)
 	g++ -Wall -Wextra -std=c++11 --coverage $< $(SOURCE) -o $@ -lgtest_main -lgtest -lpthread
 
 clean:
-	rm $(EXE) test
+	rm -f $(EXE) test
